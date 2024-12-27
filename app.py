@@ -59,7 +59,7 @@ else:
     dataframe_dividendos_transformado = transformacoes_projecao_grafico.TransformacaoGraficoBarra.dividendos_mes_ano(dataframe_dividendos)
     grafico_barra.Grafico_Barra.grafico_barra_comparacao_dividendos(dataframe_dividendos_transformado)
 
-    if st.button("Gerar Resumo Gemini"):
+    if st.button("Gerar Resumo do Relatorio"):
         
         progress_bar = st.progress(0)
 
@@ -70,6 +70,6 @@ else:
         resumo_gemini = package.pkg_analise_gemini(ticker, nivel_complexidade, nivel_detalhamento)
         
         progress_bar.progress(100)
-        st.success("Resumo Gemini gerado com sucesso!")
+        st.success("Resumo gerado com sucesso!")
         
         st.markdown(resumo_gemini)
