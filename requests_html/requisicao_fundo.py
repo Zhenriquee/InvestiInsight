@@ -32,3 +32,4 @@ class Requisicao:
     def fundo_imobiliario_biblioteca(ticker):
         fii = yf.Ticker(ticker+'.SA')
         return fii
+    
