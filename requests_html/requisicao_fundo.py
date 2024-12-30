@@ -30,6 +30,16 @@ class Requisicao:
         return resposta
     
     def fundo_imobiliario_biblioteca(ticker):
-        fii = yf.Ticker(ticker+'.SA')
-        return fii
+       
+        if not ticker.endswith('11'):
+            raise ValueError("Ticker inválido. Apenas fundos imobiliários (que terminam com '11') são aceitos.")
+
+        try:
+            fii = yf.Ticker(ticker + '.SA')
+           
+            if fii.history(period="1d").empty:
+                raise ValueError("Ticker não encontrado em nossa base de dados.")
+            return fii
+        except Exception as e:
+            raise ValueError(f"Erro ao buscar ticker: {str(e)}")
     
