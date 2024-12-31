@@ -7,18 +7,25 @@ import streamlit as st
 import time
 import streamlit.components.v1 as components
 
-# Script para injetar a tag <meta> no <head>
-inject_meta_script = """
+# Registrar o Service Worker
+register_sw = """
 <script>
-    const meta = document.createElement('meta');
-    meta.name = 'monetag';
-    meta.content = '6c2d4c36a04f2a0d19370e98acb224ce';
-    document.getElementsByTagName('head')[0].appendChild(meta);
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./static/sw.js')
+    .then(function(registration) {
+        console.log('Service Worker registrado com sucesso:', registration.scope);
+    })
+    .catch(function(error) {
+        console.log('Falha ao registrar o Service Worker:', error);
+    });
+} else {
+    console.log('Service Workers não são suportados neste navegador.');
+}
 </script>
 """
 
-# Renderizando o script
-components.html(inject_meta_script, height=0)
+# Injetar o script na aplicação
+components.html(register_sw, height=0)
 
 
 texto.Texto.titulo()
