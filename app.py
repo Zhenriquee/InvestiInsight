@@ -5,28 +5,6 @@ from extract import extracao_pdf
 from transformer import transformacoes_projecao_grafico, transformacoes_calculos_ticker
 import streamlit as st
 import time
-import streamlit.components.v1 as components
-
-# Registrar o Service Worker
-register_sw = """
-<script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./static/sw.js')
-    .then(function(registration) {
-        console.log('Service Worker registrado com sucesso:', registration.scope);
-    })
-    .catch(function(error) {
-        console.log('Falha ao registrar o Service Worker:', error);
-    });
-} else {
-    console.log('Service Workers não são suportados neste navegador.');
-}
-</script>
-"""
-
-# Injetar o script na aplicação
-components.html(register_sw, height=0)
-
 
 texto.Texto.titulo()
 
