@@ -7,12 +7,19 @@ import streamlit as st
 import time
 import streamlit.components.v1 as components
 
-st.set_page_config(layout="wide")
-# Inserindo o código da Monetag
-monetag_code = """
-<meta name="monetag" content="6c2d4c36a04f2a0d19370e98acb224ce">
+# Script para injetar a tag <meta> no <head>
+inject_meta_script = """
+<script>
+    const meta = document.createElement('meta');
+    meta.name = 'monetag';
+    meta.content = '6c2d4c36a04f2a0d19370e98acb224ce';
+    document.getElementsByTagName('head')[0].appendChild(meta);
+</script>
 """
-components.html(monetag_code, height=0)  # Altura zero para não afetar o layout
+
+# Renderizando o script
+components.html(inject_meta_script, height=0)
+
 
 texto.Texto.titulo()
 
