@@ -5,8 +5,14 @@ from extract import extracao_pdf
 from transformer import transformacoes_projecao_grafico, transformacoes_calculos_ticker
 import streamlit as st
 import time
+import streamlit.components.v1 as components
 
 st.set_page_config(layout="wide")
+# Inserindo o código da Monetag
+monetag_code = """
+<meta name="monetag" content="6c2d4c36a04f2a0d19370e98acb224ce">
+"""
+components.html(monetag_code, height=0)  # Altura zero para não afetar o layout
 
 texto.Texto.titulo()
 
