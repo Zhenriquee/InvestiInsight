@@ -72,3 +72,36 @@ class TransformacaoGraficoBandasDeBollinger:
         upper_band = rolling_mean + (rolling_std * num_std_dev)
         lower_band = rolling_mean - (rolling_std * num_std_dev)
         return lower_band, upper_band
+
+    def generate_bollinger_insights(close, lower_band, upper_band, sma):
+
+        valid_indices = close.notna() & lower_band.notna() & upper_band.notna() & sma.notna()
+        close = close[valid_indices]
+        lower_band = lower_band[valid_indices]
+        upper_band = upper_band[valid_indices]
+        sma = sma[valid_indices]
+
+        insights = []
+
+        touches_upper = (close >= upper_band).sum()
+        touches_lower = (close <= lower_band).sum()
+
+        # Contar cruzamentos do preço com a média móvel
+        crosses_sma = ((close.shift(1) < sma.shift(1)) & (close > sma)).sum() + \
+                    ((close.shift(1) > sma.shift(1)) & (close < sma)).sum()
+
+
+        avg_band_width = (upper_band - lower_band).mean()
+
+        # Gerar insights textuais
+        if touches_upper > touches_lower:
+            insights.append("O preço tocou a banda superior com mais frequência, sugerindo possível sobrecompra.")
+        elif touches_lower > touches_upper:
+            insights.append("O preço tocou a banda inferior com mais frequência, sugerindo possível sobrevenda.")
+        else:
+            insights.append("O preço tocou ambas as bandas com frequência similar, indicando possível consolidação.")
+
+        insights.append(f"Houve {crosses_sma} cruzamentos do preço com a SMA, sugerindo mudanças frequentes de tendência.")
+        insights.append(f"A largura média das bandas é {avg_band_width:.2f}, indicando um nível {'alto' if avg_band_width > 0.05 * close.mean() else 'baixo'} de volatilidade.")
+
+        return insights

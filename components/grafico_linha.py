@@ -20,7 +20,10 @@ class GraficoLinha:
             xaxis_title="Data",
             yaxis_title="Fechamento (R$)",
             template="plotly_white",
-            yaxis_tickformat="R$,.2f"
+            yaxis_tickformat="R$,.2f",
+            
+            height=750
+
         )
         fig_1_month.update_yaxes(tickprefix="R$ ", tickformat=".2f")
 
@@ -40,7 +43,8 @@ class GraficoLinha:
             xaxis_title="Data",
             yaxis_title="Fechamento (R$)",
             template="plotly_white",
-            yaxis_tickformat="R$,.2f"
+            yaxis_tickformat="R$,.2f",
+            height=750
         )
         fig_1_year.update_yaxes(tickprefix="R$ ", tickformat=".2f")
 
@@ -49,9 +53,9 @@ class GraficoLinha:
     def grafico_rsi(dataset_fii,ticker):
         rsi_fig = go.Figure()
         rsi_fig.add_trace(go.Scatter(x=dataset_fii.index, y=dataset_fii, mode='lines', name='RSI', line=dict(color='purple')))
-        rsi_fig.add_trace(go.Scatter(x=dataset_fii.index, y=[70]*len(dataset_fii), mode='lines', name='Sobrevenda (70)', line=dict(color='red', dash='dash')))
-        rsi_fig.add_trace(go.Scatter(x=dataset_fii.index, y=[30]*len(dataset_fii), mode='lines', name='Sobrecompra (30)', line=dict(color='green', dash='dash')))
-        rsi_fig.update_layout(title=f'{ticker} - RSI', xaxis_title='Data', yaxis_title='RSI', template='plotly_white')
+        rsi_fig.add_trace(go.Scatter(x=dataset_fii.index, y=[70]*len(dataset_fii), mode='lines', name='Sobrecompra (70)', line=dict(color='red', dash='dash')))
+        rsi_fig.add_trace(go.Scatter(x=dataset_fii.index, y=[30]*len(dataset_fii), mode='lines', name='Sobrevenda (30)', line=dict(color='green', dash='dash')))
+        rsi_fig.update_layout(title=f'{ticker} - RSI', xaxis_title='Data', yaxis_title='RSI', template='plotly_white',height=750)
         return plotly_chart(rsi_fig)
     
     def grafico_macd(dataset_fii_macd,dataset_fii_sinal_linha,ticker):
@@ -59,7 +63,7 @@ class GraficoLinha:
         macd_fig.add_trace(go.Scatter(x=dataset_fii_macd.index, y=dataset_fii_macd, mode='lines', name='MACD', line=dict(color='blue')))
         macd_fig.add_trace(go.Scatter(x=dataset_fii_macd.index, y=dataset_fii_sinal_linha, mode='lines', name='Linha de Sinal', line=dict(color='orange')))
         macd_fig.add_trace(go.Scatter(x=dataset_fii_macd.index, y=[0]*len(dataset_fii_macd), mode='lines', name='Linha Zero', line=dict(color='red', dash='dash')))
-        macd_fig.update_layout(title=f'{ticker} - MACD', xaxis_title='Data', yaxis_title='Valor', template='plotly_white')
+        macd_fig.update_layout(title=f'{ticker} - MACD', xaxis_title='Data', yaxis_title='Valor', template='plotly_white',height=750)
         return plotly_chart(macd_fig)
     
     def grafico_bandas_de_bollinger(resultado_fechamento, resultado_linha_central, resultado_linha_compra, resultado_linha_venda, ticker):
@@ -96,6 +100,7 @@ class GraficoLinha:
             template='plotly_white',  
             xaxis_tickangle=-45, 
             plot_bgcolor='rgba(0,0,0,0)',  
+            height=750
         )
         fig = go.Figure(data=[trace1, trace2, trace3, trace4, fill], layout=layout)
 

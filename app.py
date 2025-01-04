@@ -1,30 +1,28 @@
-from components import texto, input_text, kpi, grafico_linha, grafico_barra
+from components import texto, input_text, kpi, grafico_linha, grafico_barra,sidebar,radio
 from packages import package
-from requests_html import requisicao_fundo
-from extract import extracao_pdf
-from transformer import transformacoes_projecao_grafico, transformacoes_calculos_ticker
 import streamlit as st
 import time
 
-texto.Texto.titulo()
+st.set_page_config(layout="wide")
+# Espaço reservado para o título
+titulo_placeholder = st.empty()
 
-with st.sidebar:
-    ticker = input_text.Campo_texto.text_input()
-    nivel_complexidade = st.selectbox(
-        'Qual seria seu nível de conhecimento:',
-        ('Iniciante', 'Intermediário', 'Avançado')
-    )
-    nivel_detalhamento = st.selectbox(
-        'Escolha o nível de detalhamento do resumo:',
-        ('Informações Principais', 'Resumo', 'Resumo Detalhado')
-    )
+# Exibir o título inicial
+titulo_placeholder.title("Seja Bem vindo ao Projeto InvestiInsight")
+
+with st.sidebar:    
+    ticker = input_text.Campo_texto.text_input().upper()
+    nivel_complexidade = sidebar.Sidebar.nivel_complexidade()
+    nivel_detalhamento = sidebar.Sidebar.nivel_detalhamento()
 
 if not ticker:
     st.warning("Por favor, informe o ticker desejado no campo à esquerda.")
 else:
     try:
-        # Valida o ticker e inicializa a classe FundoImobiliario
         fundo = package.FundoImobiliario(ticker)
+        titulo_placeholder.empty()
+        html_formatado = fundo.informacoes_detalhadas_fii()
+        texto.Texto.titulo(ticker, html_formatado)
 
         # Inicializa os KPIs e gráficos
         col1, col2, col3 = st.columns(3)
@@ -39,20 +37,13 @@ else:
         valor_ano_anterior_cota = fundo.valor_ano_anterior_cota()
         variacao_percentual_ano_anterior = fundo.variacao_percentual_preco_ano_anterior()
 
-        # Exibe os KPIs
         with col1:
             kpi.kpi_vl_atual_cota(valor_atual_cota, variacao_percentual_atual)
         with col2:
             kpi.kpi_vl_mes_anterior_cota(valor_mes_anterior_cota, variacao_percentual_mes_anterior)
         with col3:
             kpi.kpi_vl_ano_anterior_cota(valor_ano_anterior_cota, variacao_percentual_ano_anterior)
-
-        # Opções de visualização
-        opcao_visualizacao = st.radio(
-            "Deseja visualizar por:",
-            ["1 Mês", "1 Ano"],
-            horizontal=True,
-        )
+        opcao_visualizacao = radio.Radio.opcoes_visualizacao()
 
         if opcao_visualizacao == "1 Mês":
             dataset_1_mes = fundo.evolucao_preco_grafico_linha_1_mes()
@@ -70,79 +61,35 @@ else:
             calculo_transformado_rsi = fundo.evolucao_preco_fii_grafico_linha_rsi()
             grafico_linha.GraficoLinha.grafico_rsi(calculo_transformado_rsi, ticker)
             with st.expander("Explicação Grafico RSI"):
-                st.markdown(''' O **RSI**  (**Relative Strength Index**) é um indicador de momentum que mede a velocidade e a mudança dos movimentos de preços. Ele ajuda a identificar condições de **sobrecompra** ou **sobrevenda** de um ativo.
-
-### Cálculo:
-\[
-RSI = 100 - {100}/{1 + RS}
-\]
-Onde **RS** é a média dos fechamentos em alta dividida pela média dos fechamentos em baixa.
-
-### Análise:
-- **Sobrecompra (>70):** Pode indicar que o ativo está sobrecomprado e que o preço pode cair em breve.
-- **Sobrevenda (<30):** Pode indicar que o ativo está sobrevendido e que o preço pode subir em breve.
-- **Reversão em torno de 50:** Pode indicar uma possível mudança na direção do preço.
-
-
-'''
-                            )
+                 texto.Markdown.explicacao_grafico_rsi()
+            with st.expander(f'Resumo Analitico RSI com Relação ao Fundo {ticker}'):
+                 resumo_rsi = fundo.resumo_analitico_rsi()
+                 st.markdown(resumo_rsi)     
 
         with graf2:
             calculo_transformado_macd, calculo_transformado_sinal_linha = fundo.evolucao_preco_fii_grafico_linha_macd()
             grafico_linha.GraficoLinha.grafico_macd(calculo_transformado_macd, calculo_transformado_sinal_linha, ticker)
             with st.expander("Explicação Grafico MACD"):
-                st.markdown('''O **MACD** (**Moving Average Convergence Divergence**) é um indicador de tendência que analisa a relação entre duas médias móveis exponenciais (EMAs) para identificar pontos de compra e venda.
-
-### Cálculo:
-\[
-MACD = EMA(12) - EMA(26)
-\]
-- **Linha de sinal:** EMA de 9 períodos do MACD.
-- **Histograma:** Diferença entre o MACD e a linha de sinal.
-
-### Análise:
-- **Cruzamento de linhas:**
-  - **MACD cruza acima da linha de sinal:** Sinal de compra.
-  - **MACD cruza abaixo da linha de sinal:** Sinal de venda.
-- **Divergência:**
-  - Se o preço faz novos máximos, mas o MACD não acompanha, pode ser sinal de fraqueza na tendência de alta (e vice-versa para a baixa).
-- **Histograma:**
-  - Indica a força da tendência. Um histograma crescente sinaliza tendência forte, enquanto um histograma decrescente pode indicar fraqueza.
-
-''')
+                texto.Markdown.explicacao_grafico_macd()
+            with st.expander(f'Resumo Analitico MACD com Relação ao Fundo {ticker}'): 
+                resumo_macd = fundo.resumo_analitico_macd()
+                st.markdown(resumo_macd)
 
         with graf3:
             linha_central, close = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_sma()
             upper, lower = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_upper_lower()
             grafico_linha.GraficoLinha.grafico_bandas_de_bollinger(close, linha_central, upper, lower, ticker)
             with st.expander("Explicação Grafico Bandas de Bollinger"):
-                st.markdown('''As **Bandas de Bollinger** são compostas por uma média móvel simples (SMA) e duas bandas baseadas no desvio padrão, que ajudam a medir a volatilidade do mercado.
+                texto.Markdown.explicacao_grafico_bandas_de_bollinger()
+            with st.expander(f'Resumo Analitico Bandas de Bollinger com Relação ao Fundo {ticker}'):
+                resumo_bollinger = fundo.resumo_analitico_bandas_de_bollinger()
+                st.markdown(resumo_bollinger)
 
-### Cálculo:
-\[
-Banda Superior = SMA + (2 \times SD)
-\]
-\[
-Banda Inferior = SMA - (2 \times SD)
-\]
+        st.markdown("## Informações Gerais sobre o Fundo")
+        kpi.kpis_informacoes_gerais(html_formatado)
+        st.markdown("## Resumo")
+        st.markdown("Aqui você pode gerar um resumo do ultimo relatório gerencial.")
 
-### Análise:
-- **Preços tocando a banda superior:** Indicam possível condição de sobrecompra.
-- **Preços tocando a banda inferior:** Indicam possível condição de sobrevenda.
-- **Squeeze (estreitamento das bandas):** Pode sinalizar baixa volatilidade, antecipando um movimento significativo de preço.
-- **Expansão das bandas:** Indica alta volatilidade, sugerindo que o ativo pode estar em uma forte tendência.
-
----
-
-### Resumo:
-- **RSI:** Mede sobrecompra (>70) e sobrevenda (<30) e pode antecipar reversões.
-- **MACD:** Identifica tendências e cruzamentos (compra ou venda).
-- **Bandas de Bollinger:** Indicam volatilidade e condições extremas de preço (sobrecompra/sobrevenda).
-
-''')
-
-
-        # Gerar Resumo
         if st.button("Gerar Resumo do Relatório"):
             progress_bar = st.progress(0)
             for i in range(1, 101, 20):
@@ -155,5 +102,4 @@ Banda Inferior = SMA - (2 \times SD)
             st.markdown(resumo_gemini)
 
     except ValueError as e:
-        # Caso haja erro, exibe a mensagem no Streamlit
         st.error(str(e))

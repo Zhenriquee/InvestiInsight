@@ -35,3 +35,17 @@ class Transformar:
         pdf_file = BytesIO(pdf_content)
         pdf_reader = PdfReader(pdf_file)
         return pdf_reader
+    
+    def organizar_detalhamento_informacoes_fii(requisicao_detalhada):
+        html_detalhado = requisicao_detalhada
+        html_formatado = BeautifulSoup(html_detalhado.text,'html.parser')
+        all_reports = html_formatado.find_all("div", class_="value")
+        extracted_data = [report.get_text(strip=True) for report in all_reports]
+        labels = [
+            "Razão Social", "CNPJ", "Público-Alvo", "Mandato", "Segmento", "Tipo de Fundo",
+            "Prazo de Duração", "Tipo de Gestão", "Taxa de Administração", "Vacância",
+            "Número de Cotistas", "Cotas Emitidas", "Valor Patrimonial por Cota",
+            "Valor Patrimonial", "Último Rendimento"
+        ]
+        data_dict = dict(zip(labels, extracted_data[:len(labels)]))
+        return data_dict

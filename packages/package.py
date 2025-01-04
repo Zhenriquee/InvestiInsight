@@ -7,8 +7,10 @@ class FundoImobiliario:
     def __init__(self, ticker):
         self.ticker = ticker
         self.ticker_selecionado = requisicao_fundo.Requisicao.fundo_imobiliario_biblioteca(ticker)
+        self.informacoes_fii = requisicao_fundo.Requisicao.requisicao_detalhada_fii(ticker)
         self.data_set_ticker = extracao_pdf.Extrair.historico_fundo_imobiliario(self.ticker_selecionado)
         self.data_frame_dividendos = extracao_pdf.Extrair.historico_dividendos_fundo_imobiliario(self.ticker_selecionado)
+        
     
     def analise_gemini(self, nivel_complexidade, nivel_detalhamento):
         requisicao = requisicao_fundo.Requisicao.fundo_imobiliario_web(self.ticker)
@@ -80,3 +82,20 @@ class FundoImobiliario:
         return transformacoes_projecao_grafico.TransformacaoGraficoBandasDeBollinger.calculate_bollinger_bands(
            self.data_set_ticker.Close
         )
+    
+    def resumo_analitico_rsi(self):
+        valores_rsi = self.evolucao_preco_fii_grafico_linha_rsi()
+        return resume_report.ResumoDataFrameGraficos.resumo_analitico_rsi(valores_rsi,self.data_set_ticker.Close, self.ticker)
+    
+    def resumo_analitico_macd(self):
+        valores_macd, valores_signal = self.evolucao_preco_fii_grafico_linha_macd()
+        return resume_report.ResumoDataFrameGraficos.resumo_analitico_macd(valores_macd,valores_signal,self.ticker)
+    
+    def resumo_analitico_bandas_de_bollinger(self):
+        linha_central, close = self.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_sma()
+        upper, lower = self.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_upper_lower()
+        insigth = transformacoes_projecao_grafico.TransformacaoGraficoBandasDeBollinger.generate_bollinger_insights(close,lower,upper,linha_central)
+        return resume_report.ResumoDataFrameGraficos.analisar_bandas_bollinger_com_gemini(self.data_set_ticker, self.ticker, linha_central, close, lower, upper, insigth) 
+    
+    def informacoes_detalhadas_fii(self):
+        return transformacao_requisicao.Transformar.organizar_detalhamento_informacoes_fii(self.informacoes_fii)

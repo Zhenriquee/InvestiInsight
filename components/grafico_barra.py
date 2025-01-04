@@ -85,6 +85,7 @@ class Grafico_Barra:
             xaxis=dict(tickangle=45),
             template="plotly_white",
             hovermode="x unified",
+            height=600
         )
 
         return plotly_chart(fig)
