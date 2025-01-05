@@ -62,18 +62,14 @@ else:
             grafico_linha.GraficoLinha.grafico_rsi(calculo_transformado_rsi, ticker)
             with st.expander("Explicação Grafico RSI"):
                  texto.Markdown.explicacao_grafico_rsi()
-            with st.expander(f'Resumo Analitico RSI com Relação ao Fundo {ticker}'):
-                 resumo_rsi = fundo.resumo_analitico_rsi()
-                 st.markdown(resumo_rsi)     
+                
 
         with graf2:
             calculo_transformado_macd, calculo_transformado_sinal_linha = fundo.evolucao_preco_fii_grafico_linha_macd()
             grafico_linha.GraficoLinha.grafico_macd(calculo_transformado_macd, calculo_transformado_sinal_linha, ticker)
             with st.expander("Explicação Grafico MACD"):
                 texto.Markdown.explicacao_grafico_macd()
-            with st.expander(f'Resumo Analitico MACD com Relação ao Fundo {ticker}'): 
-                resumo_macd = fundo.resumo_analitico_macd()
-                st.markdown(resumo_macd)
+            
 
         with graf3:
             linha_central, close = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_sma()
@@ -81,9 +77,21 @@ else:
             grafico_linha.GraficoLinha.grafico_bandas_de_bollinger(close, linha_central, upper, lower, ticker)
             with st.expander("Explicação Grafico Bandas de Bollinger"):
                 texto.Markdown.explicacao_grafico_bandas_de_bollinger()
+            
+
+        tex1, tex2, tex3 = st.columns(3)
+        with tex1:
+            with st.expander(f'Resumo Analitico RSI com Relação ao Fundo {ticker}'):
+                 resumo_rsi = fundo.resumo_analitico_rsi()
+                 st.markdown(resumo_rsi) 
+        with tex2:
+            with st.expander(f'Resumo Analitico MACD com Relação ao Fundo {ticker}'): 
+                resumo_macd = fundo.resumo_analitico_macd()
+                st.markdown(resumo_macd)
+        with tex3:
             with st.expander(f'Resumo Analitico Bandas de Bollinger com Relação ao Fundo {ticker}'):
                 resumo_bollinger = fundo.resumo_analitico_bandas_de_bollinger()
-                st.markdown(resumo_bollinger)
+                st.markdown(resumo_bollinger)        
 
         st.markdown("## Informações Gerais sobre o Fundo")
         kpi.kpis_informacoes_gerais(html_formatado)
