@@ -57,7 +57,7 @@ class ResumoDataFrameGraficos:
 
             texto = (
                 f"Análise dos dados do gráfico RSI para o fundo {ticker}.\n\n"
-                f"- Período analisado: {rsi_data.index.min().strftime('%Y-%m-%d')} a {rsi_data.index.max().strftime('%Y-%m-%d')}\n"
+                f"- Período analisado: {rsi_data.index.min().strftime('%d/%m/%Y')} a {rsi_data.index.max().strftime('%d/%m/%Y')}\n"
                 f"- Último valor de fechamento: {rsi_data['Close'].iloc[-1]}\n"
                 f"- Último valor do RSI: {ultima_rsi}\n"
                 f"- Tendência atual com base no RSI: {tendencia}\n\n"
