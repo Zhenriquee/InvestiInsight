@@ -126,12 +126,12 @@ class ResumoDataFrameGraficos:
             response = config_resume.model.generate_content(prompt)
 
 
-            #resposta_limpa = response.text.split("\nEspero que")[0].strip()
+            resposta_limpa = response.text.split("\nEspero que")[0].strip()
 
-            return response.text
+            return resposta_limpa
         except Exception as e:
             print("Erro ao preparar ou analisar os dados do gráfico MACD com Gemini:", e)
-            return None  
+            return e  
         
     def analisar_bandas_bollinger_com_gemini(data,ticker, sma, close,lower_band,upper_band,insigth, window=20, num_std_dev=2):
 
