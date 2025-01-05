@@ -95,7 +95,7 @@ class ResumoDataFrameGraficos:
 
             ultima_macd = macd_data['MACD'].iloc[-1]
             ultima_signal = macd_data['Signal_Line'].iloc[-1]
-            ultima_data = macd_data.index[-1].strftime('%d/%m/%Y')
+            ultima_data = macd_data.index[-1].strftime('%Y-%m-%d')
             tendencia = (
                 "Alta" if ultima_macd > ultima_signal else
                 "Baixa" if ultima_macd < ultima_signal else
@@ -103,7 +103,7 @@ class ResumoDataFrameGraficos:
             )
             texto = (
                 f"**Análise detalhada com base no gráfico MACD em relação ao fundo {ticker}**\n\n"
-                f"- **Período analisado:** {macd_data.index.min().strftime('%d/%m/%Y')} a {macd_data.index.max().strftime('%d/%m/%Y')}\n"
+                f"- **Período analisado:** {macd_data.index.min().strftime('%Y-%m-%d')} a {macd_data.index.max().strftime('%Y-%m-%d')}\n"
                 f"- **Última data registrada:** {ultima_data}\n"
                 f"- **Último valor do MACD:** {ultima_macd:.4f}\n"
                 f"- **Último valor da Linha de Sinal (Signal Line):** {ultima_signal:.4f}\n"
