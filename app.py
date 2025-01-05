@@ -60,6 +60,9 @@ else:
         calculo_transformado_macd, calculo_transformado_sinal_linha = fundo.evolucao_preco_fii_grafico_linha_macd()
         linha_central, close = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_sma()
         upper, lower = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_upper_lower()
+        resumo_macd = fundo.resumo_analitico_macd()
+        resumo_rsi = fundo.resumo_analitico_rsi()
+        resumo_bollinger = fundo.resumo_analitico_bandas_de_bollinger()
 
         graf1,graf2,graf3 = st.tabs(["📈 RSI","📈 MACD","📈 Bollinger"])
         with graf1:
@@ -78,16 +81,13 @@ else:
             
         tex1, tex2, tex3 = st.columns(3)
         with tex1:
-            with st.expander(f'Resumo Analitico RSI com Relação ao Fundo {ticker}'):
-                 resumo_rsi = fundo.resumo_analitico_rsi()
-                 st.markdown(resumo_rsi) 
-        with tex2:
             with st.expander(f'Resumo Analitico MACD com Relação ao Fundo {ticker}'): 
-                resumo_macd = fundo.resumo_analitico_macd()
                 st.markdown(resumo_macd)
+        with tex2:
+            with st.expander(f'Resumo Analitico RSI com Relação ao Fundo {ticker}'):
+                 st.markdown(resumo_rsi) 
         with tex3:
             with st.expander(f'Resumo Analitico Bandas de Bollinger com Relação ao Fundo {ticker}'):
-                resumo_bollinger = fundo.resumo_analitico_bandas_de_bollinger()
                 st.markdown(resumo_bollinger)        
 
         st.markdown("## Informações Gerais sobre o Fundo")
