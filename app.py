@@ -106,5 +106,8 @@ else:
             st.success("Resumo gerado com sucesso!")
             st.markdown(resumo_gemini)
 
+        resumo_macd = fundo.resumo_analitico_macd()
+        st.markdown(resumo_macd)
+    
     except ValueError as e:
         st.error(str(e))
