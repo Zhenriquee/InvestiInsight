@@ -56,29 +56,26 @@ else:
         dataframe_dividendos_transformado = fundo.evolucao_dividendos_grafico_barra()
         grafico_barra.Grafico_Barra.grafico_barra_comparacao_dividendos(dataframe_dividendos_transformado)
 
+        calculo_transformado_rsi = fundo.evolucao_preco_fii_grafico_linha_rsi()
+        calculo_transformado_macd, calculo_transformado_sinal_linha = fundo.evolucao_preco_fii_grafico_linha_macd()
+        linha_central, close = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_sma()
+        upper, lower = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_upper_lower()
+
         graf1,graf2,graf3 = st.tabs(["📈 RSI","📈 MACD","📈 Bollinger"])
         with graf1:
-            calculo_transformado_rsi = fundo.evolucao_preco_fii_grafico_linha_rsi()
             grafico_linha.GraficoLinha.grafico_rsi(calculo_transformado_rsi, ticker)
             with st.expander("Explicação Grafico RSI"):
                  texto.Markdown.explicacao_grafico_rsi()
-                
-
         with graf2:
-            calculo_transformado_macd, calculo_transformado_sinal_linha = fundo.evolucao_preco_fii_grafico_linha_macd()
             grafico_linha.GraficoLinha.grafico_macd(calculo_transformado_macd, calculo_transformado_sinal_linha, ticker)
             with st.expander("Explicação Grafico MACD"):
                 texto.Markdown.explicacao_grafico_macd()
             
-
         with graf3:
-            linha_central, close = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_sma()
-            upper, lower = fundo.evolucao_preco_fii_grafico_linha_bandas_de_bollinger_upper_lower()
             grafico_linha.GraficoLinha.grafico_bandas_de_bollinger(close, linha_central, upper, lower, ticker)
             with st.expander("Explicação Grafico Bandas de Bollinger"):
                 texto.Markdown.explicacao_grafico_bandas_de_bollinger()
             
-
         tex1, tex2, tex3 = st.columns(3)
         with tex1:
             with st.expander(f'Resumo Analitico RSI com Relação ao Fundo {ticker}'):
