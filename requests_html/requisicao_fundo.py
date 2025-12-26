@@ -37,7 +37,7 @@ class Requisicao:
         try:
             fii = yf.Ticker(ticker + '.SA')
            
-            if fii.history(period="1d").empty:
+            if fii.history(period="5D").empty:
                 raise ValueError("Ticker não encontrado em nossa base de dados.")
             return fii
         except Exception as e:
